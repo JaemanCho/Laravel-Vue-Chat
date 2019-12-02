@@ -4,7 +4,7 @@
             v-for="user in usersWithoutSignedInUser" 
             :key="user.id" 
             class="p-2 border-b-2 border-gray-600 hover:bg-gray-300 cursor-pointer"
-            @click="updateChatWith"
+            @click="updateChatWith(user.id)"
         >
             {{ user.name }}
         </div>
