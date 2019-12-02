@@ -7,6 +7,7 @@
         <div v-if="chatWith" class="w-4/5 flex flex-col">
             <ChatArea 
                 :chat-id="chatWith"
+                :messages="messages"
             />
             <div class="flex-initial p-2">
                 <input 
@@ -36,7 +37,8 @@
         data() {
             return {
                 chatWith: null,
-                text: ''
+                text: '',
+                messages: []
             }
         },
         components: {
@@ -46,6 +48,17 @@
         methods: {
             updatedChatWith(value) {
                 this.chatWith = value;
+                this.getMessages();
+            },
+            getMessages() {
+                axios.get('/api/messages', {
+                    params: {
+                        to: this.chatWith,
+                        from: this.currentUser
+                    }
+                }).then(res => {                    
+                    this.messages = res.data.messages;
+                })
             },
             submit() {
                 if (this.text) {
@@ -53,8 +66,11 @@
                         text: this.text,
                         to: this.chatWith,
                         from: this.currentUser
+                    }).then(res => {
+                        this.messages.push(res.data.message);
                     });
                 }
+                this.text = '';
             }
         }        
     }
