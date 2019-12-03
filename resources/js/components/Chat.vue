@@ -41,6 +41,13 @@
                 messages: []
             }
         },
+        created() {
+            
+            window.Echo.private('laravel-vue-chat').listen('MessageSent', e => {
+                console.log(e);
+                this.messages.push(e.message);
+            });
+        },
         components: {
             ChatUserList,
             ChatArea

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
 use App\Message;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,7 @@ class MessageController extends Controller
         })->orWhere(function($query) {
             $query->where('from', request('to'));
             $query->where('to', request('from'));
-        })->get();
+        })->oldest()->get();
         
         return response()->json([
             'messages' => $messages->load('from', 'to')
@@ -32,6 +33,8 @@ class MessageController extends Controller
 
         $message = Message::create($validated);
         
+        MessageSent::dispatch($message);
+
         return response()->json([
             'message' => $message->load('from')
         ], 201);
