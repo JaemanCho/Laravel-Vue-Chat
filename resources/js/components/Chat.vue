@@ -2,6 +2,7 @@
     <div class="flex h-full">
         <ChatUserList 
             :current-user="currentUser"
+            :chat-with="chatWith"
             @updatedChatWith="updatedChatWith"
         />
         <div v-if="chatWith" class="w-4/5 flex flex-col">
@@ -42,10 +43,10 @@
             }
         },
         created() {
-            
             window.Echo.private('laravel-vue-chat').listen('MessageSent', e => {
-                console.log(e);
-                this.messages.push(e.message);
+                if(e.message.to === this.currentUser && e.message.from === this.chatWith) {
+                    this.messages.push(e.message);
+                }
             });
         },
         components: {
